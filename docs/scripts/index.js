@@ -142,10 +142,12 @@ window.onload = function () {
                     g.shadowColor = "rgba(0, 0, 0, 0.3)";
                     g.shadowBlur = 10;
                 }
+                g.strokeStyle = "black";
                 g.strokeText(c, 0, 0);
 
             });
             iterate(function (i, c) {
+                g.strokeStyle = "white";
                 g.strokeText(c, 0, 0);
             });
         } else {
