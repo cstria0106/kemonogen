@@ -232,12 +232,10 @@ window.onload = function () {
         g.save();
         g.fillStyle = "#977a2d";
 
-        if (toggleOutline.checked) {
-            g.strokeStyle = "white";
-            g.lineWidth = 13.0;
-            g.lineCap = "round";
-            g.lineJoin = "round";
-        }
+        g.strokeStyle = "white";
+        g.lineWidth = 13.0;
+        g.lineCap = "round";
+        g.lineJoin = "round";
         g.textBaseline = "top";
         g.font = bottomTextFont;
 
@@ -249,14 +247,22 @@ window.onload = function () {
 
         for (var i = 0; i < bottomText.length; i++) {
             var c = bottomText.slice(i, i + 1);
-            if (toggleShadow.checked) {
+
+            if (toggleOutline.checked) {
+                if (toggleShadow.checked) {
+                    g.shadowColor = "rgba(0, 0, 0, 0.3)";
+                    g.shadowBlur = 10;
+                }
+                g.strokeText(c, 0, 0);
+                g.shadowColor = "none";
+                g.shadowBlur = 0;
+            } else if (toggleShadow.checked) {
                 g.shadowColor = "rgba(0, 0, 0, 0.3)";
                 g.shadowBlur = 10;
             }
-            if (toggleOutline.checked) {
-                g.strokeText(c, 0, 0);
-            }
+
             g.fillText(c, 0, 0);
+
             var metrics = g.measureText(c);
             g.translate(metrics.width + bottomTextLetterSpacing, 0);
         }
