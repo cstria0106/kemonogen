@@ -1,0 +1,107 @@
+@font-face {
+    font-family: "JapariFont";
+    src: url("../assets/fonts/TmonMonsori.ttf")
+}
+
+@font-face {
+    font-family: "NanumMyeongjo";
+    src: url("../assets/fonts/NanumMyeongjo.ttf");
+}
+
+@font-face {
+    font-family: "NanumSquare";
+    src: url("../assets/fonts/NanumSquareEB.ttf");
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "NanumMyeongjo";
+}
+
+a {
+    color: white;
+    text-shadow: 0 0 10px black;
+}
+
+h2 {
+    color: white;
+    text-shadow: 0 0 10px black;
+    margin: 0;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.container {
+    margin: 2rem;
+    padding: 3rem;
+    background-image: url("../assets/images/background.jpg");
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container div {
+    margin: 5px 0;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60%;
+    padding: 10px;
+}
+
+.inputs input[type=text] {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    border: 0;
+    padding: 10px;
+    margin: 5px;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.inputs button {
+    font-family: "NanumSquare";
+    font-size: 1.2rem;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    border: 0;
+    margin: 20px;
+    padding: 20px;
+    transition-property: all;
+    transition-duration: 0.3s;
+    vertical-align: middle;
+}
+
+.input button:hover {
+    background-color: rgba(100, 100, 100, 0.7);
+}
+
+.inputs h1 {
+    font-family: "JapariFont";
+    color: white;
+    text-shadow: 0 0 10px black;
+}
+
+.inputs span {
+    font-family: "NanumMyeongjo";
+    font-weight: bold;
+    margin: 10px;
+}
+
+#result {
+    border: solid 8px transparent;
+    margin: 10px;
+}
+
+#result:hover {
+    border: solid 8px white;
+}

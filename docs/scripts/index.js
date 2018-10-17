@@ -1,5 +1,4 @@
 window.onload = function () {
-
     var seed = {
         x: (2147483648 * Math.random()) | 0,
         y: (2147483648 * Math.random()) | 0,
@@ -47,6 +46,9 @@ window.onload = function () {
     var middleInput = document.querySelector("#middle");
     var bottomInput = document.querySelector("#bottom");
 
+    var toggleOutline = document.querySelector("#t-outline");
+    var toggleShadow = document.querySelector("#t-shadow");
+
     var top = document.querySelector(".top");
     var middle = document.querySelector(".middle");
     var bottom = document.querySelector(".bottom");
@@ -60,32 +62,33 @@ window.onload = function () {
     var canvas = document.createElement("canvas");
     var g = canvas.getContext("2d");
 
-
-
-    function update() {
-        setTimeout(function () {
-            setText(topInput.value, middleInput.value, bottomInput.value);
-        });
-    }
     middleInput.addEventListener("change", update);
     middleInput.addEventListener("keydown", update);
     topInput.addEventListener("change", update);
     topInput.addEventListener("keydown", update);
     bottomInput.addEventListener("change", update);
     bottomInput.addEventListener("keydown", update);
+    toggleOutline.addEventListener("change", update);
+    toggleShadow.addEventListener("change", update);
+
+    function update() {
+        setTimeout(function () {
+            setText(topInput.value, middleInput.value, bottomInput.value);
+        });
+    }
 
     function setText(topText, middleText, bottomText) {
-        var topTextSize = 30;
-        var topMiddlePadding = 30;
+        var topTextSize = 25;
+        var topMiddlePadding = 20;
         var middleTextSize = 120;
-        var middleBottomPadding = 20;
-        var bottomTextSize = 30;
+        var middleBottomPadding = 40;
+        var bottomTextSize = 20;
         var margin = 60;
         var bottomTextLetterSpacing = 20;
 
-        var topTextFont = `normal bold ${topTextSize}px/2 "Yu Mincho"`;
-        var middleTextFont = `normal 400 ${middleTextSize}px/2 japarifont`;
-        var bottomTextFont = `normal 400 ${bottomTextSize}px/2 PlayBold`;
+        var topTextFont = `normal bold ${topTextSize}px/2 "NanumMyeongjo"`;
+        var middleTextFont = `normal 400 ${middleTextSize}px/2 JapariFont`;
+        var bottomTextFont = `normal 400 ${bottomTextSize}px/2 NanumSquare`;
 
         // resize canvas
         g.font = topTextFont;
@@ -105,8 +108,6 @@ window.onload = function () {
         g.save();
         g.clearRect(0, 0, canvas.width, canvas.height);
         g.textBaseline = "top";
-
-
 
         // stroke top text 
         function iterate(callback) {
@@ -139,20 +140,28 @@ window.onload = function () {
         g.save();
         var xors = Object.assign({}, seed);
 
-
-
         var topColors = ["#04ad8f", "#a6ce48", "#f3a118", "#ea6435", "#17b297", "#e30983", "#2782c4", "#1aa6e7", "#b5b5b5", "#f29905", "#e50011", "#ccdc26", "#a5328d", "#0aaa60", "#91c423", "#f29300", "#ec5f69", "#22b69e", "#e63e9b", "#917220"];
 
+        if (toggleOutline.checked) {
+            iterate(function (i, c) {
+                g.strokeText(c, 0, 0);
+            });
+        }
 
-        iterate(function (i, c) {
-            g.strokeText(c, 0, 0);
-        });
-        iterate(function (i, c) {
-            g.shadowColor = "rgba(0, 0, 0, 0.3)";
-            g.shadowBlur = 10;
-            g.fillStyle = topColors[i % topColors.length];
-            g.fillText(c, 0, 0);
-        });
+        if (toggleShadow.checked) {
+            iterate(function (i, c) {
+                g.shadowColor = "rgba(0, 0, 0, 0.3)";
+                g.shadowBlur = 10;
+                g.fillStyle = topColors[i % topColors.length];
+                g.fillText(c, 0, 0);
+            });
+        } else {
+            iterate(function (i, c) {
+                g.fillStyle = topColors[i % topColors.length];
+                g.fillText(c, 0, 0);
+            });
+        }
+
 
         // centerize
         var metrics = g.measureText(middleText);
@@ -160,13 +169,17 @@ window.onload = function () {
 
         // stroke outline
         g.font = middleTextFont;
-        g.strokeStyle = "white";
-        g.lineWidth = 20.0;
-        g.shadowColor = "rgba(0, 0, 0, 0.3)";
-        g.shadowBlur = 10;
-        g.lineCap = "round";
-        g.lineJoin = "round";
-        g.strokeText(middleText, 0, 0);
+        if (toggleOutline.checked) {
+            g.strokeStyle = "white";
+            g.lineWidth = 20.0;
+            g.lineCap = "round";
+            g.lineJoin = "round";
+            g.strokeText(middleText, 0, 0);
+        }
+        if (toggleShadow.checked) {
+            g.shadowColor = "rgba(0, 0, 0, 0.3)";
+            g.shadowBlur = 10;
+        }
 
         // fill charactors
         var x = 0;
@@ -174,9 +187,6 @@ window.onload = function () {
         for (var i = 0; i < middleText.length; i++) {
             var c = middleText.slice(i, i + 1);
 
-            // base color
-            g.shadowColor = "rgba(0, 0, 0, 0.6)";
-            g.shadowBlur = 10;
             g.fillStyle = colorTuples[i % colorTuples.length][0];
             g.fillText(c, 0, 0);
 
@@ -214,11 +224,14 @@ window.onload = function () {
 
         // bottom text
         g.save();
-        g.strokeStyle = "white";
         g.fillStyle = "#977a2d";
-        g.lineWidth = 13.0;
-        g.lineCap = "round";
-        g.lineJoin = "round";
+
+        if (toggleOutline.checked) {
+            g.strokeStyle = "white";
+            g.lineWidth = 13.0;
+            g.lineCap = "round";
+            g.lineJoin = "round";
+        }
         g.textBaseline = "top";
         g.font = bottomTextFont;
 
@@ -230,10 +243,13 @@ window.onload = function () {
 
         for (var i = 0; i < bottomText.length; i++) {
             var c = bottomText.slice(i, i + 1);
-            g.shadowColor = "rgba(0, 0, 0, 0.3)";
-            g.shadowBlur = 10;
-            g.strokeText(c, 0, 0);
-            g.shadowColor = "transparent";
+            if (toggleShadow.checked) {
+                g.shadowColor = "rgba(0, 0, 0, 0.3)";
+                g.shadowBlur = 10;
+            }
+            if (toggleOutline.checked) {
+                g.strokeText(c, 0, 0);
+            }
             g.fillText(c, 0, 0);
             var metrics = g.measureText(c);
             g.translate(metrics.width + bottomTextLetterSpacing, 0);
@@ -247,8 +263,8 @@ window.onload = function () {
         download.href = url;
     }
 
-    topInput.value = "女の子の姿になった動物たちが繰り広げる大冒険！";
-    middleInput.value = "けものフレンズ";
+    topInput.value = "여자아이의 모습을 한 동물들이 펼치는 대모험!";
+    middleInput.value = "케모노 프렌즈";
     bottomInput.value = "KEMONO FRIENDS";
     update();
 
@@ -257,4 +273,4 @@ window.onload = function () {
             saveAs(blob, middleInput.value + ".png");
         });
     });
-};
+}
