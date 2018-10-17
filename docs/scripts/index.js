@@ -1,47 +1,55 @@
+var seed = {
+    x: (2147483648 * Math.random()) | 0,
+    y: (2147483648 * Math.random()) | 0,
+    z: (2147483648 * Math.random()) | 0,
+    w: (2147483648 * Math.random()) | 0
+};
+
+function randomInt(xors) {
+    var t = xors.x ^ (xors.x << 11);
+    xors.x = xors.y;
+    xors.y = xors.z;
+    xors.z = xors.w;
+    return xors.w = (xors.w ^ (xors.w >>> 19)) ^ (t ^ (t >>> 8));
+}
+
+function random(xors) {
+    return randomInt(xors) / 2147483648;
+}
+
+function shuffle(xs) {
+    var v = Object.assign({}, seed);
+    var xs = xs.slice();
+    var ys = [];
+    while (0 < xs.length) {
+        var i = Math.abs(randomInt(v)) % xs.length;
+        ys.push(xs[i]);
+        xs.splice(i, 1);
+    }
+    return ys;
+}
+
+var colorTuples = shuffle([
+    ["#16ae67", "#90c31f"],
+    ["#ea5421", "#f39800"],
+    ["#00ac8e", "#e4007f"],
+    ["#227fc4", "#00a1e9"],
+    ["#9fa0a0", "#c9caca"],
+    ["#e60013", "#f39800"],
+    ["#c3d600", "#a42e8c"]
+]);
+
+var topColors = shuffle(["#04ad8f", "#a6ce48", "#f3a118", "#ea6435", "#17b297", "#e30983", "#2782c4", "#1aa6e7", "#b5b5b5", "#f29905", "#e50011", "#ccdc26", "#a5328d", "#0aaa60", "#91c423", "#f29300", "#ec5f69", "#22b69e", "#e63e9b", "#917220"]);
+
+var topTextSize = 25;
+var topMiddlePadding = 20;
+var middleTextSize = 120;
+var middleBottomPadding = 40;
+var bottomTextSize = 20;
+var margin = 60;
+var bottomTextLetterSpacing = 20;
+
 window.onload = function () {
-    var seed = {
-        x: (2147483648 * Math.random()) | 0,
-        y: (2147483648 * Math.random()) | 0,
-        z: (2147483648 * Math.random()) | 0,
-        w: (2147483648 * Math.random()) | 0
-    };
-
-    function randomInt(xors) {
-        var t = xors.x ^ (xors.x << 11);
-        xors.x = xors.y;
-        xors.y = xors.z;
-        xors.z = xors.w;
-        return xors.w = (xors.w ^ (xors.w >>> 19)) ^ (t ^ (t >>> 8));
-    }
-
-    function random(xors) {
-        return randomInt(xors) / 2147483648;
-    }
-
-    function shuffle(xs) {
-        var v = Object.assign({}, seed);
-        var xs = xs.slice();
-        var ys = [];
-        while (0 < xs.length) {
-            var i = Math.abs(randomInt(v)) % xs.length;
-            ys.push(xs[i]);
-            xs.splice(i, 1);
-        }
-        return ys;
-    }
-
-    var colorTuples = shuffle([
-        ["#16ae67", "#90c31f"],
-        ["#ea5421", "#f39800"],
-        ["#00ac8e", "#e4007f"],
-        ["#227fc4", "#00a1e9"],
-        ["#9fa0a0", "#c9caca"],
-        ["#e60013", "#f39800"],
-        ["#c3d600", "#a42e8c"]
-    ]);
-
-    var topColors = shuffle(["#04ad8f", "#a6ce48", "#f3a118", "#ea6435", "#17b297", "#e30983", "#2782c4", "#1aa6e7", "#b5b5b5", "#f29905", "#e50011", "#ccdc26", "#a5328d", "#0aaa60", "#91c423", "#f29300", "#ec5f69", "#22b69e", "#e63e9b", "#917220"]);
-
     var topInput = document.querySelector("#top");
     var middleInput = document.querySelector("#middle");
     var bottomInput = document.querySelector("#bottom");
@@ -49,14 +57,8 @@ window.onload = function () {
     var toggleOutline = document.querySelector("#t-outline");
     var toggleShadow = document.querySelector("#t-shadow");
 
-    var top = document.querySelector(".top");
-    var middle = document.querySelector(".middle");
-    var bottom = document.querySelector(".bottom");
-
-    var foreground = document.getElementById("foreground");
     var image = document.getElementById("result");
 
-    var container = document.querySelector(".container");
     var download = document.getElementById("download");
 
     var canvas = document.createElement("canvas");
@@ -78,14 +80,6 @@ window.onload = function () {
     }
 
     function setText(topText, middleText, bottomText) {
-        var topTextSize = 25;
-        var topMiddlePadding = 20;
-        var middleTextSize = 120;
-        var middleBottomPadding = 40;
-        var bottomTextSize = 20;
-        var margin = 60;
-        var bottomTextLetterSpacing = 20;
-
         var topTextFont = `normal bold ${topTextSize}px/2 "NanumMyeongjo"`;
         var middleTextFont = `normal 400 ${middleTextSize}px/2 JapariFont`;
         var bottomTextFont = `normal 400 ${bottomTextSize}px/2 NanumSquare`;
@@ -144,23 +138,27 @@ window.onload = function () {
 
         if (toggleOutline.checked) {
             iterate(function (i, c) {
+                if (toggleShadow.checked) {
+                    g.shadowColor = "rgba(0, 0, 0, 0.3)";
+                    g.shadowBlur = 10;
+                }
+                g.strokeText(c, 0, 0);
+
+            });
+            iterate(function (i, c) {
                 g.strokeText(c, 0, 0);
             });
-        }
-
-        if (toggleShadow.checked) {
-            iterate(function (i, c) {
+        } else {
+            if (toggleShadow.checked) {
                 g.shadowColor = "rgba(0, 0, 0, 0.3)";
                 g.shadowBlur = 10;
-                g.fillStyle = topColors[i % topColors.length];
-                g.fillText(c, 0, 0);
-            });
-        } else {
-            iterate(function (i, c) {
-                g.fillStyle = topColors[i % topColors.length];
-                g.fillText(c, 0, 0);
-            });
+            }
         }
+
+        iterate(function (i, c) {
+            g.fillStyle = topColors[i % topColors.length];
+            g.fillText(c, 0, 0);
+        });
 
 
         // centerize
@@ -174,18 +172,28 @@ window.onload = function () {
             g.lineWidth = 20.0;
             g.lineCap = "round";
             g.lineJoin = "round";
+            if (toggleShadow.checked) {
+                g.shadowColor = "rgba(0, 0, 0, 0.3)";
+                g.shadowBlur = 10;
+            }
             g.strokeText(middleText, 0, 0);
         }
-        if (toggleShadow.checked) {
-            g.shadowColor = "rgba(0, 0, 0, 0.3)";
-            g.shadowBlur = 10;
-        }
+
 
         // fill charactors
         var x = 0;
         var xors = Object.assign({}, seed);
         for (var i = 0; i < middleText.length; i++) {
             var c = middleText.slice(i, i + 1);
+
+
+            if (!toggleOutline.checked && toggleShadow.checked) {
+                g.shadowColor = "rgba(0, 0, 0, 0.3)";
+                g.shadowBlur = 10;
+            } else {
+                g.shadowColor = "none";
+                g.shadowBlur = 0;
+            }
 
             g.fillStyle = colorTuples[i % colorTuples.length][0];
             g.fillText(c, 0, 0);
@@ -208,8 +216,6 @@ window.onload = function () {
             g.clip();
 
             // upper color
-            g.shadowColor = "none";
-            g.shadowBlur = 0;
             g.fillStyle = colorTuples[i % colorTuples.length][1];
             g.fillText(c, 0, 0);
 
